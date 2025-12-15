@@ -1,3 +1,4 @@
+import { PromptTemplate } from "@langchain/core/prompts"
 import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { ChatOpenAI } from "@langchain/openai"
 import { config } from "dotenv"
@@ -9,16 +10,16 @@ export const main = async () => {
     // maxTokens: 100,
   })
 
-  //   const result = await model.invoke("The sky is")
-  const prompt = [
-    new SystemMessage(
-      `You are a helpful assistant that responds to questions with three 
-      exclamation marks.`
-    ),
-    new HumanMessage("What is the capital of France?"),
-  ]
+  const template =
+    PromptTemplate.fromTemplate(`Answer the question based on the 
+  context below. If the question cannot be answered using the information 
+  provided, answer with "I don't know".
 
-  const result = await model.invoke(prompt)
-  console.log(result.content)
+Context: {context}
+
+Question: {question}
+
+Answer: `)
+  console.log(template)
 }
 main().catch((e) => console.error(e))

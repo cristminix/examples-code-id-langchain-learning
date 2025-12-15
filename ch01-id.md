@@ -255,6 +255,16 @@ Bagian sebelumnya menunjukkan bagaimana instruksi `prompt` secara signifikan mem
 Berikut adalah contoh petunjuk yang detail:
 
 ```
+Jawab pertanyaan berdasarkan konteks di bawah ini. Jika pertanyaan tidak dapat dijawab menggunakan informasi yang diberikan, jawab dengan "Saya tidak tahu".
+
+Konteks: Kemajuan terbaru dalam NLP didorong oleh Model Bahasa Besar (Large Language Models/LLMs). Model-model ini mengungguli model yang lebih kecil dan telah menjadi sangat berharga bagi pengembang yang membuat aplikasi dengan kemampuan NLP. Pengembang dapat memanfaatkan model-model ini melalui pustaka `transformers` dari Hugging Face, atau dengan menggunakan penawaran dari OpenAI dan Cohere melalui pustaka `openai` dan `cohere` secara berturut-turut.
+
+Pertanyaan: Penyedia model mana yang menawarkan LLM?
+
+Jawaban:
+```
+
+```
 Answer the question based on the context below. If the question cannot be
 answered using the information provided, answer with "I don't know".
 
