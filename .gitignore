@@ -2,5 +2,6 @@ en/
 htmls/
 Styles/
 .venv/
+.env
 node_modules/
 .ipynb_checkpoints
