@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { createChatModel } from "./createChatModel"
+import { CommaSeparatedListOutputParser } from "@langchain/core/output_parsers"
 export async function structuredOutputBasic() {
   // Mendefinisikan skema respons terstruktur menggunakan Zod.
   const answerSchema = z.object({
@@ -23,5 +24,13 @@ export async function structuredOutputBasic() {
   )
 
   // Mencetak hasilnya (yang akan sesuai dengan skema).
+  console.log(result)
+}
+
+export async function commaSeparatedBasic() {
+  const parser = new CommaSeparatedListOutputParser()
+
+  const result = await parser.invoke("apple, banana, cherry")
+
   console.log(result)
 }
