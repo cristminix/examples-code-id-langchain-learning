@@ -1,13 +1,10 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages"
 import { ChatOpenAI } from "@langchain/openai"
 import { config } from "dotenv"
+import { createChatModel } from "./createChatModel"
 config()
 export const main = async () => {
-  const model = new ChatOpenAI({
-    model: process.env.OPENAI_MODEL,
-    temperature: 0.5,
-    // maxTokens: 100,
-  })
+  const model = createChatModel()
 
   //   const result = await model.invoke("The sky is")
   const prompt = [
