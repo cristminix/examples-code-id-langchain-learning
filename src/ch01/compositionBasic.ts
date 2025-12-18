@@ -78,7 +78,7 @@ export async function chainBasic2() {
   const chatbot = template.pipe(model)
 
   for await (const token of await chatbot.stream({
-    question: "Which model providers offer LLMs?",
+    question: "Apa yang dimaksud dengan apem tembem?",
   })) {
     process.stdout.write((token as any).content)
   }
