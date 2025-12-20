@@ -104,7 +104,7 @@ Selanjutnya, kita ambil dokumen hipotesis dan gunakan sebagai masukan ke `retrie
 _Python_
 
 ```python
-retrieval_chain **=** generate_doc **|** retriever
+retrieval_chain = generate_doc | retriever
 ```
 
 _JavaScript_
@@ -239,7 +239,7 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 # Definisikan router
-router **=** prompt **|** structured_llm
+router  =  prompt  |  structured_llm
 ```
 
 _JavaScript_
