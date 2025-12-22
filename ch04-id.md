@@ -104,17 +104,17 @@ Meskipun ini sederhana dan berfungsi, ketika membawa aplikasi Anda ke produksi, 
 - Anda ingin mengontrol berapa banyak dan pesan mana yang disimpan untuk nanti, dan berapa banyak dari ini yang digunakan untuk interaksi baru.
 - Anda ingin memeriksa dan memodifikasi status ini (untuk saat ini, hanya daftar pesan) di luar panggilan ke LLM.
 
-Kami sekarang akan memperkenalkan beberapa peralatan yang lebih baik, yang akan membantu dengan ini dan semua bab selanjutnya.
+Kita sekarang akan memperkenalkan beberapa peralatan yang lebih baik, yang akan membantu dengan ini dan semua bab selanjutnya.
 
 ## Memperkenalkan LangGraph
 
-Untuk sisa bab ini dan bab-bab berikutnya, kami akan mulai menggunakan [LangGraph](https://oreil.ly/TKCb6), pustaka sumber terbuka yang ditulis oleh LangChain. LangGraph dirancang untuk memungkinkan pengembang mengimplementasikan arsitektur kognitif multiaktor, multilanjut, dan berstatus, yang disebut <em>grafik</em>. Itu banyak kata yang dikemas dalam kalimat pendek; mari kita ambil satu per satu. [Gambar 4-3](#ch04_figure_3_1736545668257457) mengilustrasikan aspek multiaktor.
+Untuk sisa bab ini dan bab-bab berikutnya, Kita akan mulai menggunakan [LangGraph](https://oreil.ly/TKCb6), pustaka sumber terbuka yang ditulis oleh LangChain. LangGraph dirancang untuk memungkinkan pengembang mengimplementasikan arsitektur kognitif multiaktor, multilanjut, dan berstatus, yang disebut <em>grafik</em>. Itu banyak kata yang dikemas dalam kalimat pendek; mari kita ambil satu per satu. [Gambar 4-3](#ch04_figure_3_1736545668257457) mengilustrasikan aspek multiaktor.
 
 ![A diagram of a computer  Description automatically generated](Images/lelc_0403.png)
 
 <span class="label">Gambar 4-3. </span>Dari aplikasi satu-aktor ke aplikasi multiaktor
 
-Tim spesialis dapat membangun sesuatu bersama-sama yang tidak dapat dibangun oleh salah satu dari mereka sendirian. Hal yang sama berlaku untuk aplikasi LLM: permintaan LLM (bagus untuk menghasilkan jawaban dan merencanakan tugas dan banyak hal lainnya) jauh lebih kuat ketika dipasangkan dengan mesin pencari (terbaik dalam menemukan fakta terkini), atau bahkan ketika dipasangkan dengan permintaan LLM yang berbeda. Kami telah melihat pengembang membangun beberapa aplikasi luar biasa, seperti [Perplexity](https://oreil.ly/bVlu7) atau [Arc Search](https://oreil.ly/NPOlF), ketika mereka menggabungkan dua blok bangunan itu (dan lainnya) dengan cara baru.
+Tim spesialis dapat membangun sesuatu bersama-sama yang tidak dapat dibangun oleh salah satu dari mereka sendirian. Hal yang sama berlaku untuk aplikasi LLM: permintaan LLM (bagus untuk menghasilkan jawaban dan merencanakan tugas dan banyak hal lainnya) jauh lebih kuat ketika dipasangkan dengan mesin pencari (terbaik dalam menemukan fakta terkini), atau bahkan ketika dipasangkan dengan permintaan LLM yang berbeda. Kita telah melihat pengembang membangun beberapa aplikasi luar biasa, seperti [Perplexity](https://oreil.ly/bVlu7) atau [Arc Search](https://oreil.ly/NPOlF), ketika mereka menggabungkan dua blok bangunan itu (dan lainnya) dengan cara baru.
 
 Dan sama seperti tim manusia memerlukan koordinasi lebih daripada satu orang bekerja sendiri, aplikasi dengan banyak aktor memerlukan lapisan koordinasi untuk melakukan hal-hal ini:
 
@@ -168,11 +168,11 @@ pip install langgraph
 npm i @langchain/langgraph
 ```
 
-Untuk membantu Anda terbiasa menggunakan LangGraph, kami akan membuat chatbot sederhana menggunakan LangGraph, yang merupakan contoh bagus dari arsitektur panggilan LLM dengan satu penggunaan LLM. Chatbot ini akan merespons langsung pesan pengguna. Meskipun sederhana, ini mengilustrasikan konsep inti membangun dengan LangGraph.
+Untuk membantu Anda terbiasa menggunakan LangGraph, Kita akan membuat chatbot sederhana menggunakan LangGraph, yang merupakan contoh bagus dari arsitektur panggilan LLM dengan satu penggunaan LLM. Chatbot ini akan merespons langsung pesan pengguna. Meskipun sederhana, ini mengilustrasikan konsep inti membangun dengan LangGraph.
 
 ## Membuat StateGraph
 
-Mulailah dengan membuat `StateGraph`. Kami akan menambahkan simpul untuk mewakili panggilan LLM:
+Mulailah dengan membuat `StateGraph`. Kita akan menambahkan simpul untuk mewakili panggilan LLM:
 
 <em>Python</em>
 
@@ -227,9 +227,9 @@ const builder = new StateGraph(State)
 > **Catatan**
 > Hal pertama yang Anda lakukan saat mendefinisikan grafik adalah mendefinisikan status grafik. <em>Status</em> terdiri dari bentuk, atau skema, status grafik, serta fungsi reducer yang menentukan cara menerapkan pembaruan ke status. Dalam contoh ini, status adalah kamus dengan satu kunci: `messages`. Kunci `messages` diberi anotasi dengan fungsi reducer `add_messages`, yang memberi tahu LangGraph untuk menambahkan pesan baru ke daftar yang ada, daripada menimpanya. Kunci status tanpa anotasi akan ditimpa oleh setiap pembaruan, menyimpan nilai terbaru. Anda dapat menulis fungsi reducer Anda sendiri, yang hanyalah fungsi yang menerima argumen—argumen 1 adalah status saat ini, dan argumen 2 adalah nilai berikutnya yang ditulis ke status—dan harus mengembalikan status berikutnya, yaitu, hasil penggabungan status saat ini dengan nilai baru. Contoh paling sederhana adalah fungsi yang menambahkan nilai berikutnya ke daftar dan mengembalikan daftar itu.
 
-Jadi sekarang grafik kami tahu dua hal:
+Jadi sekarang grafik Kita tahu dua hal:
 
-- Setiap `simpul` yang kami definisikan akan menerima `Status` saat ini sebagai masukan dan mengembalikan nilai yang memperbarui status itu.
+- Setiap `simpul` yang Kita definisikan akan menerima `Status` saat ini sebagai masukan dan mengembalikan nilai yang memperbarui status itu.
 - `messages` akan <em>ditambahkan</em> ke daftar saat ini, daripada langsung ditimpa. Ini dikomunikasikan melalui fungsi bawaan [add_messages](https://oreil.ly/sK-Ry) dalam sintaks `Annotated` dalam contoh Python atau fungsi reducer untuk contoh JavaScript.
 
 Selanjutnya, tambahkan simpul `chatbot`. Simpul mewakili unit kerja. Mereka biasanya hanya fungsi:
@@ -297,7 +297,7 @@ Ini melakukan beberapa hal:
 - Ini menginstruksikan grafik di mana seharusnya keluar (ini opsional, karena LangGraph akan menghentikan eksekusi begitu tidak ada lagi simpul yang dijalankan).
 - Ini mengkompilasi grafik menjadi objek yang dapat dijalankan, dengan metode `invoke` dan `stream` yang familiar.
 
-Kami juga dapat menggambar representasi visual grafik:
+Kita juga dapat menggambar representasi visual grafik:
 
 <em>Python</em>
 
@@ -311,7 +311,7 @@ graph.get_graph().draw_mermaid_png()
 await graph.getGraph().drawMermaidPng()
 ```
 
-Grafik yang baru kami buat terlihat seperti [Gambar 4-6](#ch04_figure_6_1736545668257524).
+Grafik yang baru Kita buat terlihat seperti [Gambar 4-6](#ch04_figure_6_1736545668257524).
 
 ![A diagram of a chatbot  Description automatically generated](Images/lelc_0406.png)
 
@@ -342,13 +342,13 @@ for await (const chunk of await graph.stream(input)) {
 { "chatbot": { "messages": [AIMessage("How can I help you?")] } }
 ```
 
-Perhatikan bagaimana masukan ke grafik memiliki bentuk yang sama dengan objek `State` yang kami definisikan sebelumnya; yaitu, kami mengirim daftar pesan dalam kunci `messages` dari kamus. Selain itu, fungsi `stream` mengalirkan nilai penuh status setelah setiap langkah grafik.
+Perhatikan bagaimana masukan ke grafik memiliki bentuk yang sama dengan objek `State` yang Kita definisikan sebelumnya; yaitu, Kita mengirim daftar pesan dalam kunci `messages` dari kamus. Selain itu, fungsi `stream` mengalirkan nilai penuh status setelah setiap langkah grafik.
 
 ## Menambahkan Memori ke StateGraph
 
-LangGraph memiliki persistensi bawaan, yang digunakan dengan cara yang sama untuk grafik paling sederhana hingga paling kompleks. Mari kita lihat seperti apa menerapkannya pada arsitektur pertama ini. Kami akan mengkompilasi ulang grafik kami, sekarang melampirkan <em>checkpointer</em>, yang merupakan adaptor penyimpanan untuk LangGraph. LangGraph dikirim dengan kelas dasar yang dapat di-subclass oleh pengguna mana pun untuk membuat adaptor untuk basis data favorit mereka; pada saat penulisan, LangGraph dikirim dengan beberapa adaptor yang dikelola oleh LangChain:
+LangGraph memiliki persistensi bawaan, yang digunakan dengan cara yang sama untuk grafik paling sederhana hingga paling kompleks. Mari kita lihat seperti apa menerapkannya pada arsitektur pertama ini. Kita akan mengkompilasi ulang grafik Kita, sekarang melampirkan <em>checkpointer</em>, yang merupakan adaptor penyimpanan untuk LangGraph. LangGraph dikirim dengan kelas dasar yang dapat di-subclass oleh pengguna mana pun untuk membuat adaptor untuk basis data favorit mereka; pada saat penulisan, LangGraph dikirim dengan beberapa adaptor yang dikelola oleh LangChain:
 
-- Adaptor dalam memori, yang akan kami gunakan untuk contoh kami di sini
+- Adaptor dalam memori, yang akan Kita gunakan untuk contoh Kita di sini
 - Adaptor SQLite, menggunakan basis data dalam proses yang populer, cocok untuk aplikasi lokal dan pengujian
 - Adaptor Postgres, dioptimalkan untuk basis data relasional populer dan cocok untuk aplikasi skala besar.
 
@@ -410,9 +410,9 @@ const result_2 = await graph.invoke(
 
 Perhatikan objek `thread1`, yang mengidentifikasi interaksi saat ini sebagai milik riwayat interaksi tertentu—yang disebut <em>threads</em> dalam LangGraph. Thread dibuat secara otomatis saat pertama digunakan. Setiap string adalah pengidentifikasi yang valid untuk thread (biasanya, UUID digunakan). Keberadaan thread membantu Anda mencapai tonggak penting dalam aplikasi LLM Anda; sekarang dapat digunakan oleh banyak pengguna dengan percakapan independen yang tidak pernah tercampur.
 
-Seperti sebelumnya, simpul `chatbot` pertama kali dipanggil dengan satu pesan (yang baru saja kami kirim) dan mengembalikan pesan lain, keduanya kemudian disimpan dalam status.
+Seperti sebelumnya, simpul `chatbot` pertama kali dipanggil dengan satu pesan (yang baru saja Kita kirim) dan mengembalikan pesan lain, keduanya kemudian disimpan dalam status.
 
-Kedua kalinya kami menjalankan grafik pada thread yang sama, simpul `chatbot` dipanggil dengan tiga pesan, dua yang disimpan dari eksekusi pertama, dan pertanyaan berikutnya dari pengguna. Ini adalah inti memori: status sebelumnya masih ada, yang memungkinkan, misalnya, menjawab pertanyaan tentang sesuatu yang dikatakan sebelumnya (dan melakukan banyak hal menarik lainnya, yang akan kami lihat lebih banyak nanti).
+Kedua kalinya Kita menjalankan grafik pada thread yang sama, simpul `chatbot` dipanggil dengan tiga pesan, dua yang disimpan dari eksekusi pertama, dan pertanyaan berikutnya dari pengguna. Ini adalah inti memori: status sebelumnya masih ada, yang memungkinkan, misalnya, menjawab pertanyaan tentang sesuatu yang dikatakan sebelumnya (dan melakukan banyak hal menarik lainnya, yang akan Kita lihat lebih banyak nanti).
 
 Anda juga dapat memeriksa dan memperbarui status secara langsung; mari kita lihat caranya:
 
@@ -448,7 +448,7 @@ Ini akan menambahkan satu pesan lagi ke daftar pesan dalam status, untuk digunak
 
 ## Memodifikasi Riwayat Obrolan
 
-Dalam banyak kasus, pesan riwayat obrolan tidak dalam status atau format terbaik untuk menghasilkan respons akurat dari model. Untuk mengatasi masalah ini, kami dapat memodifikasi riwayat obrolan dalam tiga cara utama: memotong, menyaring, dan menggabungkan pesan.
+Dalam banyak kasus, pesan riwayat obrolan tidak dalam status atau format terbaik untuk menghasilkan respons akurat dari model. Untuk mengatasi masalah ini, Kita dapat memodifikasi riwayat obrolan dalam tiga cara utama: memotong, menyaring, dan menggabungkan pesan.
 
 ### Memotong Pesan
 
@@ -456,7 +456,7 @@ LLM memiliki <em>jendela konteks</em> terbatas; dengan kata lain, ada jumlah tok
 
 Solusi efektif untuk masalah ini adalah membatasi jumlah pesan yang diambil dari riwayat obrolan dan ditambahkan ke permintaan. Dalam praktiknya, kita hanya perlu memuat dan menyimpan pesan terbaru. Mari gunakan contoh riwayat obrolan dengan beberapa pesan yang sudah dimuat.
 
-Untungnya, LangChain menyediakan pembantu bawaan `trim_messages` yang menggabungkan berbagai strategi untuk memenuhi persyaratan ini. Misalnya, pembantu pemotong memungkinkan menentukan berapa banyak token yang ingin kami pertahankan atau hapus dari riwayat obrolan.
+Untungnya, LangChain menyediakan pembantu bawaan `trim_messages` yang menggabungkan berbagai strategi untuk memenuhi persyaratan ini. Misalnya, pembantu pemotong memungkinkan menentukan berapa banyak token yang ingin Kita pertahankan atau hapus dari riwayat obrolan.
 
 Berikut contoh yang mengambil `max_tokens` terakhir dalam daftar pesan dengan mengatur parameter strategi ke `"last"`:
 
@@ -545,15 +545,15 @@ Perhatikan hal berikut:
 
 - Parameter `strategy` mengontrol apakah akan mulai dari awal atau akhir daftar. Biasanya, Anda ingin memprioritaskan pesan terbaru dan memotong pesan lebih lama jika tidak muat. Yaitu, mulai dari akhir daftar. Untuk perilaku ini, pilih nilai `last`. Opsi lain yang tersedia adalah `first`, yang akan memprioritaskan pesan terlama dan memotong pesan lebih baru jika tidak muat.
 - `token_counter` adalah LLM atau model obrolan, yang akan digunakan untuk menghitung token menggunakan tokenizer yang sesuai dengan model itu.
-- Kami dapat menambahkan parameter `include_system=True` untuk memastikan pemotong menyimpan pesan sistem.
-- Parameter `allow_partial` menentukan apakah akan memotong konten pesan terakhir agar sesuai dalam batas. Dalam contoh kami, kami mengatur ini ke `false`, yang sepenuhnya menghapus pesan yang akan mengirim total melebihi batas.
-- Parameter `start_on="human"` memastikan kami tidak pernah menghapus `AIMessage` (yaitu, respons dari model) tanpa juga menghapus `HumanMessage` yang sesuai (pertanyaan untuk respons itu).
+- Kita dapat menambahkan parameter `include_system=True` untuk memastikan pemotong menyimpan pesan sistem.
+- Parameter `allow_partial` menentukan apakah akan memotong konten pesan terakhir agar sesuai dalam batas. Dalam contoh Kita, Kita mengatur ini ke `false`, yang sepenuhnya menghapus pesan yang akan mengirim total melebihi batas.
+- Parameter `start_on="human"` memastikan Kita tidak pernah menghapus `AIMessage` (yaitu, respons dari model) tanpa juga menghapus `HumanMessage` yang sesuai (pertanyaan untuk respons itu).
 
 ### Menyaring Pesan
 
 Saat daftar pesan riwayat obrolan tumbuh, berbagai jenis, subrantai, dan model dapat digunakan. Pembantu `filter_messages` LangChain memudahkan penyaringan pesan riwayat obrolan berdasarkan jenis, ID, atau nama.
 
-Berikut contoh di mana kami menyaring pesan manusia:
+Berikut contoh di mana Kita menyaring pesan manusia:
 
 <em>Python</em>
 
@@ -612,7 +612,7 @@ filterMessages(messages, { includeTypes: ["human"] })
  HumanMessage(content='masukan nyata', name='bob', id='4')]
 ```
 
-Mari coba contoh lain di mana kami menyaring untuk mengecualikan pengguna dan ID, dan menyertakan jenis pesan:
+Mari coba contoh lain di mana Kita menyaring untuk mengecualikan pengguna dan ID, dan menyertakan jenis pesan:
 
 <em>Python</em>
 
@@ -781,6 +781,6 @@ const chain = merger.pipe(model)
 
 ## Ringkasan
 
-Bab ini membahas dasar-dasar membangun sistem memori sederhana yang memungkinkan chatbot AI Anda mengingat percakapannya dengan pengguna. Kami membahas cara mengotomatisasi penyimpanan dan pembaruan riwayat obrolan menggunakan LangGraph untuk memudahkan ini. Kami juga membahas pentingnya memodifikasi riwayat obrolan dan mengeksplorasi berbagai strategi untuk memotong, menyaring, dan meringkas pesan obrolan.
+Bab ini membahas dasar-dasar membangun sistem memori sederhana yang memungkinkan chatbot AI Anda mengingat percakapannya dengan pengguna. Kita membahas cara mengotomatisasi penyimpanan dan pembaruan riwayat obrolan menggunakan LangGraph untuk memudahkan ini. Kita juga membahas pentingnya memodifikasi riwayat obrolan dan mengeksplorasi berbagai strategi untuk memotong, menyaring, dan meringkas pesan obrolan.
 
 Di [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774), Anda akan belajar cara mengaktifkan chatbot AI Anda untuk melakukan lebih dari sekadar mengobrol kembali: misalnya, model baru Anda akan dapat membuat keputusan, memilih tindakan, dan merefleksikan keluaran masa lalunya.

@@ -10,7 +10,7 @@ Pertanyaan selanjutnya seharusnya: Bagaimana kita merakit potongan-potongan ini 
 
 Sebelum kita melihat arsitektur spesifik, mari kita telusuri contoh. Setiap aplikasi LLM yang mungkin Anda bangun akan dimulai dari tujuan: apa yang dirancang aplikasi untuk dilakukan. Katakanlah Anda ingin membangun asisten email—aplikasi LLM yang membaca email Anda sebelum Anda melakukannya dan bertujuan mengurangi jumlah email yang perlu Anda lihat. Aplikasi mungkin melakukan ini dengan mengarsipkan beberapa yang tidak menarik, langsung membalas beberapa, dan menandai lainnya sebagai pantas mendapat perhatian Anda nanti.
 
-Anda mungkin juga ingin aplikasi terikat oleh beberapa batasan dalam tindakannya. Mendaftarkan batasan itu sangat membantu, karena mereka akan membantu menginformasikan pencarian arsitektur yang tepat. [Bab 8](ch08.xhtml#ch08_patterns_to_make_the_most_of_llms_1736545674143600) membahas batasan ini lebih detail dan cara bekerja dengannya. Untuk asisten email hipotetis ini, katakanlah kami ingin melakukan hal berikut:
+Anda mungkin juga ingin aplikasi terikat oleh beberapa batasan dalam tindakannya. Mendaftarkan batasan itu sangat membantu, karena mereka akan membantu menginformasikan pencarian arsitektur yang tepat. [Bab 8](ch08.xhtml#ch08_patterns_to_make_the_most_of_llms_1736545674143600) membahas batasan ini lebih detail dan cara bekerja dengannya. Untuk asisten email hipotetis ini, katakanlah Kita ingin melakukan hal berikut:
 
 - Meminimalkan jumlah kali itu mengganggu Anda (bagaimanapun juga, intinya adalah menghemat waktu).
 - Menghindari koresponden email Anda menerima balasan yang tidak akan pernah Anda kirim sendiri.
@@ -23,16 +23,16 @@ Salah satu cara untuk menggambarkan tingkat otonomi aplikasi LLM adalah dengan m
 - Memiliki LLM memutuskan langkah berikutnya yang akan diambil (misalnya, untuk email baru, memutuskan antara tiga tindakan yang dapat dilakukan pada email: arsipkan, balas, atau tandai untuk tinjauan).
 - Memiliki LLM memutuskan langkah apa yang tersedia untuk diambil (misalnya, memiliki LLM menulis kode yang menjalankan tindakan dinamis yang tidak Anda program sebelumnya ke dalam aplikasi).
 
-Kami dapat mengklasifikasikan sejumlah _resep_ populer untuk membangun aplikasi LLM berdasarkan di mana mereka berada dalam spektrum otonomi ini, yaitu, mana dari tiga tugas yang baru saja disebutkan yang ditangani oleh LLM dan mana yang tetap di tangan pengembang atau pengguna. Resep ini dapat disebut arsitektur kognitif. Dalam bidang kecerdasan buatan, istilah arsitektur kognitif telah lama digunakan untuk menunjukkan model penalaran manusia (dan implementasinya dalam komputer). Arsitektur kognitif LLM (istilah ini pertama kali diterapkan pada LLM, sepengetahuan kami, dalam makalah[1]) dapat didefinisikan sebagai resep untuk langkah-langkah yang akan diambil oleh aplikasi LLM (lihat [Gambar 5-1](#ch05_figure_1_1736545670023944)). _Langkah_ adalah, misalnya, pengambilan dokumen relevan (RAG), atau memanggil LLM dengan permintaan chain-of-thought.
+Kita dapat mengklasifikasikan sejumlah _resep_ populer untuk membangun aplikasi LLM berdasarkan di mana mereka berada dalam spektrum otonomi ini, yaitu, mana dari tiga tugas yang baru saja disebutkan yang ditangani oleh LLM dan mana yang tetap di tangan pengembang atau pengguna. Resep ini dapat disebut arsitektur kognitif. Dalam bidang kecerdasan buatan, istilah arsitektur kognitif telah lama digunakan untuk menunjukkan model penalaran manusia (dan implementasinya dalam komputer). Arsitektur kognitif LLM (istilah ini pertama kali diterapkan pada LLM, sepengetahuan Kita, dalam makalah[1]) dapat didefinisikan sebagai resep untuk langkah-langkah yang akan diambil oleh aplikasi LLM (lihat [Gambar 5-1](#ch05_figure_1_1736545670023944)). _Langkah_ adalah, misalnya, pengambilan dokumen relevan (RAG), atau memanggil LLM dengan permintaan chain-of-thought.
 
-![A screenshot of a computer application Description automatically generated](Images/lelc_0501.png)
+![A screenshot of a computer application Description automatically generated](Images/Gemini_Generated_Image_jby4d4jby4d4jby4.png)
 
 **Gambar 5-1.** Arsitektur kognitif untuk aplikasi LLM
 
 Sekarang mari kita lihat masing-masing arsitektur utama, atau resep, yang dapat Anda gunakan saat membangun aplikasi Anda (seperti yang ditunjukkan pada [Gambar 5-1](#ch05_figure_1_1736545670023944)):
 
 **0: Kode**
-Ini bukan arsitektur kognitif LLM (karenanya kami beri nomor **0**), karena tidak menggunakan LLM sama sekali. Anda dapat menganggap ini sebagai perangkat lunak biasa yang biasa Anda tulis. Arsitektur menarik pertama (untuk buku ini, setidaknya) sebenarnya adalah yang berikutnya.
+Ini bukan arsitektur kognitif LLM (karenanya Kita beri nomor **0**), karena tidak menggunakan LLM sama sekali. Anda dapat menganggap ini sebagai perangkat lunak biasa yang biasa Anda tulis. Arsitektur menarik pertama (untuk buku ini, setidaknya) sebenarnya adalah yang berikutnya.
 
 **1: Panggilan LLM**
 Ini adalah mayoritas contoh yang telah kita lihat dalam buku sejauh ini, dengan hanya satu panggilan LLM. Ini berguna terutama ketika itu adalah bagian dari aplikasi yang lebih besar yang menggunakan LLM untuk mencapai tugas tertentu, seperti menerjemahkan atau meringkas sepotong teks.
@@ -51,13 +51,13 @@ Langkah selanjutnya ini berasal dari menggunakan LLM untuk menentukan urutan lan
 2. Langkah pengambilan yang mengkueri indeks yang dipilih untuk dokumen paling relevan untuk kueri pengguna.
 3. Panggilan LLM lain untuk menghasilkan jawaban, mengingat kueri yang disediakan pengguna dan daftar dokumen relevan yang diambil dari indeks.
 
-Sejauh itulah yang akan kita bahas dalam bab ini. Kami akan membicarakan masing-masing arsitektur ini secara bergiliran. Bab-bab berikutnya membahas arsitektur agen, yang bahkan lebih banyak menggunakan LLM. Tetapi pertama-tama mari kita bicara tentang beberapa peralatan yang lebih baik untuk membantu kita dalam perjalanan ini.
+Sejauh itulah yang akan kita bahas dalam bab ini. Kita akan membicarakan masing-masing arsitektur ini secara bergiliran. Bab-bab berikutnya membahas arsitektur agen, yang bahkan lebih banyak menggunakan LLM. Tetapi pertama-tama mari kita bicara tentang beberapa peralatan yang lebih baik untuk membantu kita dalam perjalanan ini.
 
 ## Arsitektur #1: Panggilan LLM
 
-Sebagai contoh arsitektur panggilan LLM, kami akan kembali ke chatbot yang kami buat di [Bab 4](ch04.xhtml#ch04_using_langgraph_to_add_memory_to_your_chatbot_1736545668266431). Chatbot ini akan merespons langsung pesan pengguna.
+Sebagai contoh arsitektur panggilan LLM, Kita akan kembali ke chatbot yang Kita buat di [Bab 4](ch04.xhtml#ch04_using_langgraph_to_add_memory_to_your_chatbot_1736545668266431). Chatbot ini akan merespons langsung pesan pengguna.
 
-Mulailah dengan membuat `StateGraph`, yang akan kami tambahkan simpul untuk mewakili panggilan LLM:
+Mulailah dengan membuat `StateGraph`, yang akan Kita tambahkan simpul untuk mewakili panggilan LLM:
 
 _Python_
 
@@ -133,7 +133,7 @@ const builder = new StateGraph(State)
 const graph = builder.compile()
 ```
 
-Kami juga dapat menggambar representasi visual grafik:
+Kita juga dapat menggambar representasi visual grafik:
 
 _Python_
 
@@ -147,7 +147,7 @@ _JavaScript_
 await graph.getGraph().drawMermaidPng()
 ```
 
-Grafik yang baru kami buat terlihat seperti [Gambar 5-2](#ch05_figure_2_1736545670023979).
+Grafik yang baru Kita buat terlihat seperti [Gambar 5-2](#ch05_figure_2_1736545670023979).
 
 ![A diagram of a chatbot Description automatically generated](Images/lelc_0502.png)
 
@@ -178,7 +178,7 @@ _Keluaran:_
 { "chatbot": { "messages": [AIMessage("Bagaimana saya dapat membantu Anda?")] } }
 ```
 
-Perhatikan bagaimana masukan ke grafik memiliki bentuk yang sama dengan objek `State` yang kami definisikan sebelumnya; yaitu, kami mengirim daftar pesan dalam kunci `messages` dari kamus.
+Perhatikan bagaimana masukan ke grafik memiliki bentuk yang sama dengan objek `State` yang Kita definisikan sebelumnya; yaitu, Kita mengirim daftar pesan dalam kunci `messages` dari kamus.
 
 Ini adalah arsitektur paling sederhana yang mungkin untuk menggunakan LLM, yang tidak berarti bahwa itu tidak boleh digunakan. Berikut beberapa contoh di mana Anda mungkin melihatnya dalam tindakan dalam produk populer, di antara banyak lainnya:
 
@@ -189,14 +189,14 @@ Ini adalah arsitektur paling sederhana yang mungkin untuk menggunakan LLM, yang 
 
 Arsitektur selanjutnya ini memperluas semua itu dengan menggunakan beberapa panggilan LLM, dalam urutan yang telah ditentukan (yaitu, berbagai pemanggilan aplikasi melakukan urutan panggilan LLM yang sama, meskipun dengan masukan dan hasil yang berbeda).
 
-Mari kita ambil contoh aplikasi teks-ke-SQL, yang menerima sebagai masukan dari pengguna deskripsi bahasa alami dari beberapa perhitungan untuk dilakukan atas basis data. Kami sebutkan sebelumnya bahwa ini dapat dicapai dengan satu panggilan LLM, untuk menghasilkan kueri SQL, tetapi kami dapat membuat aplikasi yang lebih canggih dengan menggunakan beberapa panggilan LLM secara berurutan. Beberapa penulis menyebut arsitektur ini rekayasa alur.[2]
+Mari kita ambil contoh aplikasi teks-ke-SQL, yang menerima sebagai masukan dari pengguna deskripsi bahasa alami dari beberapa perhitungan untuk dilakukan atas basis data. Kita sebutkan sebelumnya bahwa ini dapat dicapai dengan satu panggilan LLM, untuk menghasilkan kueri SQL, tetapi Kita dapat membuat aplikasi yang lebih canggih dengan menggunakan beberapa panggilan LLM secara berurutan. Beberapa penulis menyebut arsitektur ini rekayasa alur.[2]
 
 Pertama mari kita gambarkan alurnya dalam kata-kata:
 
 1. Satu panggilan LLM untuk menghasilkan kueri SQL dari kueri bahasa alami, yang disediakan oleh pengguna, dan deskripsi konten basis data, yang disediakan oleh pengembang.
 2. Panggilan LLM lain untuk menulis penjelasan kueri yang sesuai untuk pengguna nonteknis, mengingat kueri yang dihasilkan dalam panggilan sebelumnya. Ini kemudian dapat digunakan untuk memungkinkan pengguna memeriksa apakah kueri yang dihasilkan cocok dengan permintaannya.
 
-Anda juga dapat memperluas ini lebih jauh (tetapi kami tidak akan melakukannya di sini) dengan langkah-langkah tambahan yang akan diambil setelah dua sebelumnya:
+Anda juga dapat memperluas ini lebih jauh (tetapi Kita tidak akan melakukannya di sini) dengan langkah-langkah tambahan yang akan diambil setelah dua sebelumnya:
 
 3. Menjalankan kueri terhadap basis data, yang mengembalikan tabel dua dimensi.
 4. Menggunakan panggilan LLM ketiga untuk meringkas hasil kueri menjadi jawaban tekstual untuk pertanyaan pengguna asli.
@@ -386,9 +386,9 @@ Perhatikan juga penggunaan skema masukan dan keluaran terpisah saat membuat `Sta
 
 ## Arsitektur #3: Pengarah
 
-Arsitektur selanjutnya ini naik tangga otonomi dengan menugaskan LLM tanggung jawab berikutnya yang kami gariskan sebelumnya: memutuskan langkah berikutnya yang akan diambil. Artinya, sedangkan arsitektur rantai selalu mengeksekusi urutan langkah statis (berapa pun banyaknya), arsitektur pengarah dicirikan dengan menggunakan LLM untuk memilih antara langkah-langkah yang telah ditentukan.
+Arsitektur selanjutnya ini naik tangga otonomi dengan menugaskan LLM tanggung jawab berikutnya yang Kita gariskan sebelumnya: memutuskan langkah berikutnya yang akan diambil. Artinya, sedangkan arsitektur rantai selalu mengeksekusi urutan langkah statis (berapa pun banyaknya), arsitektur pengarah dicirikan dengan menggunakan LLM untuk memilih antara langkah-langkah yang telah ditentukan.
 
-Mari kita gunakan contoh aplikasi RAG dengan akses ke beberapa indeks dokumen dari domain berbeda (lihat [Bab 2](ch02.xhtml#ch02_rag_part_i_indexing_your_data_1736545662500927) untuk lebih lanjut tentang pengindeksan). Biasanya Anda dapat mengekstrak kinerja lebih baik dari LLM dengan menghindari penyertaan informasi tidak relevan dalam permintaan. Oleh karena itu, dalam membangun aplikasi ini, kami harus mencoba memilih indeks yang tepat untuk digunakan untuk setiap kueri dan hanya menggunakan yang itu. Perkembangan kunci dalam arsitektur ini adalah menggunakan LLM untuk membuat keputusan ini, secara efektif menggunakan LLM untuk mengevaluasi setiap kueri masuk dan memutuskan indeks mana yang harus digunakan untuk kueri tertentu itu.
+Mari kita gunakan contoh aplikasi RAG dengan akses ke beberapa indeks dokumen dari domain berbeda (lihat [Bab 2](ch02.xhtml#ch02_rag_part_i_indexing_your_data_1736545662500927) untuk lebih lanjut tentang pengindeksan). Biasanya Anda dapat mengekstrak kinerja lebih baik dari LLM dengan menghindari penyertaan informasi tidak relevan dalam permintaan. Oleh karena itu, dalam membangun aplikasi ini, Kita harus mencoba memilih indeks yang tepat untuk digunakan untuk setiap kueri dan hanya menggunakan yang itu. Perkembangan kunci dalam arsitektur ini adalah menggunakan LLM untuk membuat keputusan ini, secara efektif menggunakan LLM untuk mengevaluasi setiap kueri masuk dan memutuskan indeks mana yang harus digunakan untuk kueri tertentu itu.
 
 > **Catatan**
 > Sebelum munculnya LLM, cara biasa untuk menyelesaikan masalah ini adalah dengan membangun model pengklasifikasi menggunakan teknik ML dan dataset yang memetakan kueri pengguna contoh ke indeks yang tepat. Ini bisa terbukti cukup menantang, karena memerlukan:
@@ -662,7 +662,7 @@ Representasi visual ditunjukkan pada [Gambar 5-4](#ch05_figure_4_173654567002402
 
 **Gambar 5-4.** Arsitektur pengarah
 
-Perhatikan bagaimana ini sekarang mulai menjadi lebih berguna, karena menunjukkan dua jalur yang mungkin melalui grafik, melalui `retrieve_medical_records` atau melalui `retrieve_insurance_faqs`, dan bahwa untuk keduanya, kami pertama mengunjungi simpul `router` dan selesai dengan mengunjungi simpul `generate_answer`. Dua jalur yang mungkin ini diimplementasikan melalui penggunaan tepi bersyarat, diimplementasikan dalam fungsi `pick_retriever`, yang memetakan `domain` yang dipilih oleh LLM ke salah satu dari dua simpul yang disebutkan sebelumnya. Tepi bersyarat ditunjukkan pada [Gambar 5-4](#ch05_figure_4_1736545670024020) sebagai garis putus-putus dari simpul sumber ke simpul tujuan.
+Perhatikan bagaimana ini sekarang mulai menjadi lebih berguna, karena menunjukkan dua jalur yang mungkin melalui grafik, melalui `retrieve_medical_records` atau melalui `retrieve_insurance_faqs`, dan bahwa untuk keduanya, Kita pertama mengunjungi simpul `router` dan selesai dengan mengunjungi simpul `generate_answer`. Dua jalur yang mungkin ini diimplementasikan melalui penggunaan tepi bersyarat, diimplementasikan dalam fungsi `pick_retriever`, yang memetakan `domain` yang dipilih oleh LLM ke salah satu dari dua simpul yang disebutkan sebelumnya. Tepi bersyarat ditunjukkan pada [Gambar 5-4](#ch05_figure_4_1736545670024020) sebagai garis putus-putus dari simpul sumber ke simpul tujuan.
 
 Dan sekarang untuk contoh masukan dan keluaran, kali ini dengan keluaran streaming:
 
@@ -716,14 +716,14 @@ _Keluaran_ (jawaban aktual tidak ditampilkan, karena akan tergantung pada dokume
 
 Aliran keluaran ini berisi nilai yang dikembalikan oleh setiap simpul yang berjalan selama eksekusi grafik ini. Mari kita ambil satu per satu. Kunci tingkat atas dalam setiap kamus adalah nama simpul, dan nilai untuk kunci itu adalah apa yang dikembalikan simpul itu:
 
-1. Simpul `router` mengembalikan pembaruan ke `messages` (ini akan memungkinkan kami dengan mudah melanjutkan percakapan ini menggunakan teknik memori yang dijelaskan sebelumnya), dan `domain` yang dipilih LLM untuk kueri pengguna ini, dalam kasus ini `insurance`.
+1. Simpul `router` mengembalikan pembaruan ke `messages` (ini akan memungkinkan Kita dengan mudah melanjutkan percakapan ini menggunakan teknik memori yang dijelaskan sebelumnya), dan `domain` yang dipilih LLM untuk kueri pengguna ini, dalam kasus ini `insurance`.
 2. Kemudian fungsi `pick_retriever` berjalan dan mengembalikan nama simpul berikutnya yang akan dijalankan, berdasarkan `domain` yang diidentifikasi oleh panggilan LLM pada langkah sebelumnya.
-3. Kemudian simpul `retrieve_insurance_faqs` berjalan, mengembalikan sekumpulan dokumen relevan dari indeks itu. Ini berarti bahwa pada gambar grafik yang terlihat sebelumnya, kami mengambil jalur kiri, seperti yang diputuskan oleh LLM.
+3. Kemudian simpul `retrieve_insurance_faqs` berjalan, mengembalikan sekumpulan dokumen relevan dari indeks itu. Ini berarti bahwa pada gambar grafik yang terlihat sebelumnya, Kita mengambil jalur kiri, seperti yang diputuskan oleh LLM.
 4. Terakhir, simpul `generate_answer` berjalan, yang mengambil dokumen-dokumen itu dan kueri pengguna asli dan menghasilkan jawaban untuk pertanyaan, yang ditulis ke status (bersama dengan pembaruan akhir ke kunci `messages`).
 
 ## Ringkasan
 
-Bab ini membicarakan trade-off kunci saat membangun aplikasi LLM: agensi versus pengawasan. Semakin otonom aplikasi LLM, semakin banyak yang dapat dilakukannya—tetapi itu meningkatkan kebutuhan lebih banyak mekanisme kontrol atas tindakannya. Kami melanjutkan ke arsitektur kognitif berbeda yang mencapai keseimbangan berbeda antara agensi dan pengawasan.
+Bab ini membicarakan trade-off kunci saat membangun aplikasi LLM: agensi versus pengawasan. Semakin otonom aplikasi LLM, semakin banyak yang dapat dilakukannya—tetapi itu meningkatkan kebutuhan lebih banyak mekanisme kontrol atas tindakannya. Kita melanjutkan ke arsitektur kognitif berbeda yang mencapai keseimbangan berbeda antara agensi dan pengawasan.
 
 [Bab 6](ch06.xhtml#ch06_agent_architecture_1736545671750341) membicarakan yang paling kuat dari arsitektur kognitif yang telah kita lihat sejauh ini: arsitektur agen.
 
