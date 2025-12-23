@@ -20,9 +20,9 @@ Seperti banyak teknik permintaan yang telah kita lihat sejauh ini, refleksi dapa
 
 Paralel dapat ditarik ke mode pemikiran manusia yang dikenal sebagai _Sistem 1_ (reaktif atau instingtif) dan _Sistem 2_ (metodis dan reflektif), pertama kali diperkenalkan oleh Daniel Kahneman dalam buku _Thinking, Fast and Slow_ (Farrar, Straus and Giroux, 2011). Ketika diterapkan dengan benar, kritik diri dapat membantu aplikasi LLM lebih dekat ke sesuatu yang menyerupai perilaku Sistem 2 ([Gambar 7-1](#ch07_figure_1_1736545673018473)).
 
-![Pemikiran Sistem 1 dan Sistem 2](Images/lelc_0701.png)
+![Pemikiran Sistem 1 dan Sistem 2](Images/Gemini_Generated_Image_9lisgk9lisgk9lis.png)
 
-Kami akan mengimplementasikan refleksi sebagai grafik dengan dua simpul: `generate` dan `reflect`. Grafik ini akan diberi tugas menulis esai tiga-paragraf, dengan simpul `generate` menulis atau merevisi draf esai, dan `reflect` menulis kritik untuk menginformasikan revisi berikutnya. Kami akan menjalankan lingkaran sejumlah tetap kali, tetapi variasi teknik ini akan memiliki simpul `reflect` memutuskan kapan harus selesai. Mari kita lihat seperti apa:
+kita akan mengimplementasikan refleksi sebagai grafik dengan dua simpul: `generate` dan `reflect`. Grafik ini akan diberi tugas menulis esai tiga-paragraf, dengan simpul `generate` menulis atau merevisi draf esai, dan `reflect` menulis kritik untuk menginformasikan revisi berikutnya. kita akan menjalankan lingkaran sejumlah tetap kali, tetapi variasi teknik ini akan memiliki simpul `reflect` memutuskan kapan harus selesai. Mari kita lihat seperti apa:
 
 _Python_
 
@@ -68,13 +68,13 @@ def reflect(state: State) -> State:
     # Balikkan pesan untuk membuat LLM berefleksi pada keluaran sendiri
     cls_map = {AIMessage: HumanMessage, HumanMessage: AIMessage}
     # Pesan pertama adalah permintaan pengguna asli.
-    # Kami pertahankan sama untuk semua simpul
+    # kita pertahankan sama untuk semua simpul
     translated = [reflection_prompt, state["messages"][0]] + [
         cls_map[msg.__class__](content=msg.content)
             for msg in state["messages"][1:]
     ]
     answer = model.invoke(translated)
-    # Kami perlakukan keluaran ini sebagai umpan balik manusia untuk generator
+    # kita perlakukan keluaran ini sebagai umpan balik manusia untuk generator
     return {"messages": [HumanMessage(content=answer.content)]}
 
 def should_continue(state: State):
@@ -145,7 +145,7 @@ async function reflect(state) {
     human: AIMessage,
   };
   // Pesan pertama adalah permintaan pengguna asli.
-  // Kami pertahankan sama untuk semua simpul
+  // kita pertahankan sama untuk semua simpul
   const translated = [
     reflectionPrompt,
     state.messages[0],
@@ -154,7 +154,7 @@ async function reflect(state) {
       .map((msg) => new clsMap[msg._getType()](msg.content as string)),
   ];
   const answer = await model.invoke(translated);
-  // Kami perlukan keluaran ini sebagai umpan balik manusia untuk generator
+  // kita perlukan keluaran ini sebagai umpan balik manusia untuk generator
   return { messages: [new HumanMessage({ content: answer.content })] };
 }
 
@@ -183,7 +183,7 @@ Representasi visual grafik ditunjukkan pada [Gambar 7-2](#ch07_figure_2_17365456
 
 Perhatikan bagaimana simpul `reflect` menipu LLM untuk berpikir itu sedang mengkritik esai yang ditulis oleh pengguna. Dan bersamaan, simpul `generate` dibuat untuk berpikir bahwa kritik berasal dari pengguna. Tipu daya ini diperlukan karena LLM yang disetel dialog dilatih pada pasangan pesan manusia-AI, jadi urutan banyak pesan dari partisipan yang sama akan menghasilkan kinerja buruk.
 
-Satu hal lagi untuk dicatat: Anda mungkin, pada pandangan pertama, mengharapkan akhir datang setelah langkah revisi, tetapi dalam arsitektur ini kami memiliki jumlah iterasi tetap dari lingkaran `generate-reflect`; oleh karena itu kami berhenti setelah `generate` (sehingga set revisi terakhir yang diminta ditangani). Variasi pada arsitektur ini akan memiliki langkah `reflect` membuat keputusan untuk mengakhiri proses (setelah tidak ada lagi komentar).
+Satu hal lagi untuk dicatat: Anda mungkin, pada pandangan pertama, mengharapkan akhir datang setelah langkah revisi, tetapi dalam arsitektur ini kita memiliki jumlah iterasi tetap dari lingkaran `generate-reflect`; oleh karena itu kita berhenti setelah `generate` (sehingga set revisi terakhir yang diminta ditangani). Variasi pada arsitektur ini akan memiliki langkah `reflect` membuat keputusan untuk mengakhiri proses (setelah tidak ada lagi komentar).
 
 Mari kita lihat seperti apa salah satu kritik:
 
@@ -255,7 +255,7 @@ Dalam kasus penggunaan tertentu, mungkin membantu membumikan kritik dengan infor
 
 > **Tip**
 >
-> Kapan pun pendekatan ini memungkinkan, kami sangat merekomendasikan mencobanya, karena kemungkinan akan meningkatkan kualitas keluaran akhir.
+> Kapan pun pendekatan ini memungkinkan, kita sangat merekomendasikan mencobanya, karena kemungkinan akan meningkatkan kualitas keluaran akhir.
 
 ## Subgrafik di LangGraph
 
@@ -385,7 +385,7 @@ def node(state: State):
     return {"foo": response["bar"]}
 
 builder = StateGraph(State)
-# perhatikan bahwa kami menggunakan fungsi `node` alih-alih subgrafik yang dikompilasi
+# perhatikan bahwa kita menggunakan fungsi `node` alih-alih subgrafik yang dikompilasi
 builder.add_node(node)
 ...
 graph = builder.compile()
@@ -447,7 +447,7 @@ Saat agen LLM tumbuh dalam ukuran, cakupan, atau kompleksitas, beberapa masalah 
 
 Untuk menangani masalah ini, Anda mungkin mempertimbangkan memecah aplikasi Anda menjadi beberapa agen yang lebih kecil, independen dan menyusunnya menjadi sistem multi-agen. Agen independen ini dapat sesederhana permintaan dan panggilan LLM atau serumit agen ReAct (diperkenalkan di [Bab 6](ch06.xhtml#ch06_agent_architecture_1736545671750341)). [Gambar 7-3](#ch07_figure_3_1736545673018556) mengilustrasikan beberapa cara untuk menghubungkan agen dalam sistem multi-agen.
 
-![A diagram of a network  Description automatically generated](Images/lelc_0703.png)
+![A diagram of a network  Description automatically generated](Images/Gemini_Generated_Image_tlrryktlrryktlrr.png)
 
 Mari kita lihat [Gambar 7-3](#ch07_figure_3_1736545673018556) lebih detail:
 
@@ -463,11 +463,11 @@ Mari kita lihat [Gambar 7-3](#ch07_figure_3_1736545673018556) lebih detail:
 **Alur kerja multi-agen khusus**
 : Setiap agen berkomunikasi hanya dengan subset agen. Bagian dari alur bersifat deterministik, dan hanya agen tertentu yang dapat memutuskan agen lain mana yang akan dipanggil berikutnya.
 
-Bagian berikutnya menyelami lebih dalam arsitektur pengawas, yang kami pikir memiliki keseimbangan baik antara kemampuan dan kemudahan penggunaan.
+Bagian berikutnya menyelami lebih dalam arsitektur pengawas, yang kita pikir memiliki keseimbangan baik antara kemampuan dan kemudahan penggunaan.
 
 ### Arsitektur Pengawas
 
-Dalam arsitektur ini, kami menambahkan setiap agen ke grafik sebagai simpul dan juga menambahkan simpul pengawas, yang memutuskan agen mana yang harus dipanggil berikutnya. Kami menggunakan tepi bersyarat untuk mengarahkan eksekusi ke simpul agen yang sesuai berdasarkan keputusan pengawas. Lihat kembali [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774) untuk pengantar LangGraph, yang membahas konsep simpul, tepi, dan lainnya.
+Dalam arsitektur ini, kita menambahkan setiap agen ke grafik sebagai simpul dan juga menambahkan simpul pengawas, yang memutuskan agen mana yang harus dipanggil berikutnya. kita menggunakan tepi bersyarat untuk mengarahkan eksekusi ke simpul agen yang sesuai berdasarkan keputusan pengawas. Lihat kembali [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774) untuk pengantar LangGraph, yang membahas konsep simpul, tepi, dan lainnya.
 
 Pertama mari kita lihat seperti apa simpul pengawas:
 
@@ -529,11 +529,7 @@ const systemPromptPart2 = `Mengingat percakapan di atas, siapa yang harus bertin
   haruskah kita FINISH? Pilih salah satu: ${agents.join(", ")}, FINISH`
 
 const supervisor = async (state) => {
-  const messages = [
-    { role: "system", content: systemPromptPart1 },
-    ...state.messages,
-    { role: "system", content: systemPromptPart2 },
-  ]
+  const messages = [{ role: "system", content: systemPromptPart1 }, ...state.messages, { role: "system", content: systemPromptPart2 }]
 
   return await modelWithStructuredOutput.invoke({ messages })
 }
@@ -543,7 +539,7 @@ const supervisor = async (state) => {
 >
 > Kode dalam permintaan memerlukan nama subagen Anda untuk dapat menjelaskan diri sendiri dan berbeda. Misalnya, jika mereka hanya disebut `agent_1` dan `agent_2`, LLM tidak akan memiliki informasi untuk memutuskan mana yang sesuai untuk setiap tugas. Jika diperlukan, Anda dapat memodifikasi permintaan untuk menambahkan deskripsi setiap agen, yang dapat membantu LLM dalam memilih agen untuk setiap kueri.
 
-Sekarang mari kita lihat cara mengintegrasikan simpul pengawas ini ke dalam grafik yang lebih besar yang mencakup dua subagen lain, yang akan kami sebut peneliti dan pengkode. Tujuan keseluruhan kami dengan grafik ini adalah menangani kueri yang dapat dijawab baik oleh peneliti sendiri atau pengkode sendiri, atau bahkan keduanya secara berurutan. Contoh ini tidak menyertakan implementasi untuk peneliti atau pengkode—ide kuncinya adalah mereka bisa menjadi grafik atau simpul LangGraph lainnya:
+Sekarang mari kita lihat cara mengintegrasikan simpul pengawas ini ke dalam grafik yang lebih besar yang mencakup dua subagen lain, yang akan kita sebut peneliti dan pengkode. Tujuan keseluruhan kita dengan grafik ini adalah menangani kueri yang dapat dijawab baik oleh peneliti sendiri atau pengkode sendiri, atau bahkan keduanya secara berurutan. Contoh ini tidak menyertakan implementasi untuk peneliti atau pengkode—ide kuncinya adalah mereka bisa menjadi grafik atau simpul LangGraph lainnya:
 
 _Python_
 
@@ -625,12 +621,12 @@ const graph = new StateGraph(StateAnnotation)
 
 Beberapa hal untuk diperhatikan: Dalam contoh ini, kedua subagen (peneliti dan pengkode) dapat melihat pekerjaan satu sama lain, karena semua kemajuan dicatat dalam daftar pesan. Ini bukan satu-satunya cara untuk mengatur ini. Masing-masing subagen bisa lebih kompleks. Misalnya, subagen bisa menjadi grafiknya sendiri yang mempertahankan status internal dan hanya mengeluarkan ringkasan pekerjaan yang dilakukannya.
 
-Setelah setiap agen mengeksekusi, kami mengarahkan kembali ke simpul pengawas, yang memutuskan apakah ada lebih banyak pekerjaan yang harus dilakukan dan agen mana untuk mendelegasikannya jika ya. Pengarahan ini bukan persyaratan keras untuk arsitektur ini; kami dapat memiliki setiap subagen membuat keputusan apakah keluarannya harus dikembalikan langsung ke pengguna. Untuk melakukan itu, kami akan mengganti tepi keras antara, katakanlah, peneliti dan pengawas, dengan tepi bersyarat (yang akan membaca beberapa kunci status yang diperbarui oleh peneliti).
+Setelah setiap agen mengeksekusi, kita mengarahkan kembali ke simpul pengawas, yang memutuskan apakah ada lebih banyak pekerjaan yang harus dilakukan dan agen mana untuk mendelegasikannya jika ya. Pengarahan ini bukan persyaratan keras untuk arsitektur ini; kita dapat memiliki setiap subagen membuat keputusan apakah keluarannya harus dikembalikan langsung ke pengguna. Untuk melakukan itu, kita akan mengganti tepi keras antara, katakanlah, peneliti dan pengawas, dengan tepi bersyarat (yang akan membaca beberapa kunci status yang diperbarui oleh peneliti).
 
 ## Ringkasan
 
 Bab ini membahas dua ekstensi penting untuk arsitektur agen: refleksi dan arsitektur multi-agen. Bab ini juga melihat cara bekerja dengan subgrafik di LangGraph, yang merupakan blok bangunan kunci untuk sistem multi-agen.
 
-Ekstensi ini menambah lebih banyak kekuatan ke arsitektur agen LLM, tetapi mereka seharusnya bukan hal pertama yang Anda raih saat membuat agen baru. Tempat terbaik untuk memulai biasanya arsitektur langsung yang kami bahas di [Bab 6](ch06.xhtml#ch06_agent_architecture_1736545671750341).
+Ekstensi ini menambah lebih banyak kekuatan ke arsitektur agen LLM, tetapi mereka seharusnya bukan hal pertama yang Anda raih saat membuat agen baru. Tempat terbaik untuk memulai biasanya arsitektur langsung yang kita bahas di [Bab 6](ch06.xhtml#ch06_agent_architecture_1736545671750341).
 
 [Bab 8](ch08.xhtml#ch08_patterns_to_make_the_most_of_llms_1736545674143600) kembali ke trade-off antara keandalan dan agensi, yang merupakan keputusan desain kunci saat membangun aplikasi LLM saat ini. Ini sangat penting saat menggunakan arsitektur agen atau multi-agen, karena kekuatan mereka datang dengan pengorbanan keandalan jika tidak dicek. Setelah menyelami lebih dalam mengapa trade-off ini ada, [Bab 8](ch08.xhtml#ch08_patterns_to_make_the_most_of_llms_1736545674143600) akan membahas teknik paling penting yang tersedia bagi Anda untuk menavigasi keputusan itu, dan pada akhirnya meningkatkan aplikasi dan agen LLM Anda.
