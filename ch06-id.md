@@ -1,6 +1,6 @@
 # Arsitektur Agen
 
-Membangun di atas arsitektur yang dijelaskan di [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774), bab ini akan membahas apa yang mungkin paling penting dari semua arsitektur LLM saat ini, arsitektur agen. Pertama, kami memperkenalkan apa yang membuat agen LLM unik, kemudian kami menunjukkan cara membangunnya dan cara memperluasnya untuk kasus penggunaan umum.
+Membangun di atas arsitektur yang dijelaskan di [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774), bab ini akan membahas apa yang mungkin paling penting dari semua arsitektur LLM saat ini, arsitektur agen. Pertama, kita memperkenalkan apa yang membuat agen LLM unik, kemudian kita menunjukkan cara membangunnya dan cara memperluasnya untuk kasus penggunaan umum.
 
 Dalam bidang kecerdasan buatan, ada sejarah panjang menciptakan agen (cerdas), yang paling sederhana dapat didefinisikan sebagai "sesuatu yang bertindak," menurut kata-kata Stuart Russell dan Peter Norvig dalam buku teks mereka _Artificial Intelligence_ (Pearson, 2020). Kata _bertindak_ sebenarnya membawa sedikit lebih banyak makna daripada yang terlihat:
 
@@ -8,7 +8,7 @@ Dalam bidang kecerdasan buatan, ada sejarah panjang menciptakan agen (cerdas), y
 - Memutuskan apa yang harus dilakukan menyiratkan memiliki akses ke lebih dari satu kemungkinan tindakan. Bagaimanapun juga, keputusan tanpa pilihan bukanlah keputusan sama sekali.
 - Untuk memutuskan, agen juga memerlukan akses ke informasi tentang lingkungan eksternal (apa pun di luar agen itu sendiri).
 
-Jadi aplikasi LLM _agen_ haruslah yang menggunakan LLM untuk memilih dari satu atau lebih kemungkinan tindakan, mengingat beberapa konteks tentang status dunia saat ini atau beberapa status berikutnya yang diinginkan. Atribut ini biasanya diimplementasikan dengan mencampur dua teknik permintaan yang pertama kami temui di [Prakata](preface01.xhtml#pr01_preface_1736545679069216):
+Jadi aplikasi LLM _agen_ haruslah yang menggunakan LLM untuk memilih dari satu atau lebih kemungkinan tindakan, mengingat beberapa konteks tentang status dunia saat ini atau beberapa status berikutnya yang diinginkan. Atribut ini biasanya diimplementasikan dengan mencampur dua teknik permintaan yang pertama kita temui di [Prakata](preface01.xhtml#pr01_preface_1736545679069216):
 
 <dl>
 	<dt>Pemanggilan alat (Tool calling)</dt>
@@ -53,16 +53,16 @@ tambahkan contoh permintaan dan keluaran untuk model pemanggilan alat
 
 ## Lingkaran Rencana‑Lakukan
 
-Apa yang membuat arsitektur agen berbeda dari arsitektur yang dibahas di [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774) adalah konsep yang belum kami bahas: lingkaran yang digerakkan LLM.
+Apa yang membuat arsitektur agen berbeda dari arsitektur yang dibahas di [Bab 5](ch05.xhtml#ch05_cognitive_architectures_with_langgraph_1736545670030774) adalah konsep yang belum kita bahas: lingkaran yang digerakkan LLM.
 
-Setiap pemrogram pernah menemui lingkaran dalam kode mereka sebelumnya. Dengan _lingkaran_, kami maksud menjalankan kode yang sama beberapa kali hingga kondisi berhenti tercapai. Kunci arsitektur agen adalah memiliki LLM mengontrol kondisi berhenti—yaitu, memutuskan kapan harus berhenti berputar.
+Setiap pemrogram pernah menemui lingkaran dalam kode mereka sebelumnya. Dengan _lingkaran_, kita maksud menjalankan kode yang sama beberapa kali hingga kondisi berhenti tercapai. Kunci arsitektur agen adalah memiliki LLM mengontrol kondisi berhenti—yaitu, memutuskan kapan harus berhenti berputar.
 
-Apa yang akan kami jalankan dalam lingkaran ini akan menjadi beberapa variasi dari berikut:
+Apa yang akan kita jalankan dalam lingkaran ini akan menjadi beberapa variasi dari berikut:
 
 - Merencanakan satu atau beberapa tindakan
 - Mengeksekusi tindakan tersebut
 
-Mengambil contoh di bagian sebelumnya, kami selanjutnya akan menjalankan alat `pencarian` dengan masukan `presiden ke‑30 Amerika Serikat`, yang menghasilkan keluaran ini:
+Mengambil contoh di bagian sebelumnya, kita selanjutnya akan menjalankan alat `pencarian` dengan masukan `presiden ke‑30 Amerika Serikat`, yang menghasilkan keluaran ini:
 
 ```
 Calvin Coolidge (lahir John Calvin Coolidge Jr.; /ˈkuːlɪdʒ/; 4 Juli 1872 – 5
@@ -70,7 +70,7 @@ Januari 1933) adalah seorang pengacara dan politisi Amerika yang menjabat sebaga
 Amerika Serikat dari 1923 hingga 1929. John Calvin Coolidge Jr.
 ```
 
-Dan kemudian kami akan menjalankan ulang permintaan, dengan tambahan kecil:
+Dan kemudian kita akan menjalankan ulang permintaan, dengan tambahan kecil:
 
 ```
 Alat:
@@ -103,10 +103,10 @@ Dan keluaran:
 kalkulator,1933 - 1872
 ```
 
-Perhatikan kami menambahkan dua hal:
+Perhatikan kita menambahkan dua hal:
 
-- Alat "keluaran"—yang harus digunakan LLM ketika telah menemukan jawaban akhir, dan yang akan kami gunakan sebagai sinyal untuk menghentikan lingkaran.
-- Hasil panggilan alat dari iterasi sebelumnya, cukup dengan nama alat dan keluaran (teks)-nya. Ini disertakan untuk memungkinkan LLM melanjutkan ke langkah berikutnya dalam interaksi. Dengan kata lain, kami memberi tahu LLM, "Hei, kami mendapatkan hasil yang Anda minta, apa yang ingin Anda lakukan selanjutnya?"
+- Alat "keluaran"—yang harus digunakan LLM ketika telah menemukan jawaban akhir, dan yang akan kita gunakan sebagai sinyal untuk menghentikan lingkaran.
+- Hasil panggilan alat dari iterasi sebelumnya, cukup dengan nama alat dan keluaran (teks)-nya. Ini disertakan untuk memungkinkan LLM melanjutkan ke langkah berikutnya dalam interaksi. Dengan kata lain, kita memberi tahu LLM, "Hei, kita mendapatkan hasil yang Anda minta, apa yang ingin Anda lakukan selanjutnya?"
 
 Mari lanjutkan dengan iterasi ketiga:
 
@@ -156,7 +156,7 @@ Tetapi pertama, mari kita lihat seperti apa mengimplementasikan arsitektur agen 
 
 ## Membangun Agen LangGraph
 
-Untuk contoh ini, kami perlu memasang dependensi tambahan untuk alat pencarian yang kami pilih untuk digunakan, DuckDuckGo. Untuk memasangnya untuk Python:
+Untuk contoh ini, kita perlu memasang dependensi tambahan untuk alat pencarian yang kita pilih untuk digunakan, DuckDuckGo. Untuk memasangnya untuk Python:
 
 _Python_
 
@@ -164,7 +164,7 @@ _Python_
 pip install duckduckgo-search
 ```
 
-Dan untuk JS, kami juga perlu memasang dependensi untuk alat kalkulator:
+Dan untuk JS, kita juga perlu memasang dependensi untuk alat kalkulator:
 
 _JavaScript_
 
@@ -262,10 +262,10 @@ Representasi visual ditunjukkan pada [Gambar 6-1](#ch06_figure_1_173654567174463
 
 Beberapa hal untuk diperhatikan di sini:
 
-- Kami menggunakan dua alat dalam contoh ini: alat pencarian dan alat kalkulator, tetapi Anda dapat dengan mudah menambahkan lebih banyak atau mengganti yang kami gunakan. Dalam contoh Python, Anda juga melihat contoh membuat alat khusus.
-- Kami telah menggunakan dua fungsi kenyamanan yang dikirim dengan LangGraph. `ToolNode` berfungsi sebagai simpul dalam grafik kami; ia mengeksekusi panggilan alat yang diminta dalam pesan AI terbaru yang ditemukan dalam status dan mengembalikan `ToolMessage` dengan hasil masing-masing. `ToolNode` juga menangani pengecualian yang dimunculkan oleh alat—menggunakan pesan kesalahan untuk membangun `ToolMessage` yang kemudian diteruskan ke LLM—yang mungkin memutuskan apa yang harus dilakukan dengan kesalahan.
+- kita menggunakan dua alat dalam contoh ini: alat pencarian dan alat kalkulator, tetapi Anda dapat dengan mudah menambahkan lebih banyak atau mengganti yang kita gunakan. Dalam contoh Python, Anda juga melihat contoh membuat alat khusus.
+- kita telah menggunakan dua fungsi kenyamanan yang dikirim dengan LangGraph. `ToolNode` berfungsi sebagai simpul dalam grafik kita; ia mengeksekusi panggilan alat yang diminta dalam pesan AI terbaru yang ditemukan dalam status dan mengembalikan `ToolMessage` dengan hasil masing-masing. `ToolNode` juga menangani pengecualian yang dimunculkan oleh alat—menggunakan pesan kesalahan untuk membangun `ToolMessage` yang kemudian diteruskan ke LLM—yang mungkin memutuskan apa yang harus dilakukan dengan kesalahan.
 - `tools_condition` berfungsi sebagai fungsi tepi bersyarat yang melihat pesan AI terbaru dalam status dan mengarahkan ke simpul `tools` jika ada alat yang harus dieksekusi. Jika tidak, ia mengakhiri grafik.
-- Terakhir, perhatikan bahwa grafik ini berputar antara simpul model dan alat. Artinya, model itu sendiri yang bertanggung jawab memutuskan kapan mengakhiri komputasi, yang merupakan atribut kunci arsitektur agen. Kapan pun kami mengkodekan lingkaran dalam LangGraph, kami kemungkinan ingin menggunakan tepi bersyarat, karena itu memungkinkan Anda mendefinisikan _kondisi berhenti_ ketika grafik harus keluar dari lingkaran dan berhenti mengeksekusi.
+- Terakhir, perhatikan bahwa grafik ini berputar antara simpul model dan alat. Artinya, model itu sendiri yang bertanggung jawab memutuskan kapan mengakhiri komputasi, yang merupakan atribut kunci arsitektur agen. Kapan pun kita mengkodekan lingkaran dalam LangGraph, kita kemungkinan ingin menggunakan tepi bersyarat, karena itu memungkinkan Anda mendefinisikan _kondisi berhenti_ ketika grafik harus keluar dari lingkaran dan berhenti mengeksekusi.
 
 Sekarang mari kita lihat bagaimana kinerjanya dalam contoh sebelumnya:
 
@@ -344,7 +344,7 @@ _Keluaran:_
 
 Menelusuri keluaran ini:
 
-1. Pertama simpul `model` dieksekusi dan memutuskan untuk memanggil alat `duckduckgo_search`, yang menyebabkan tepi bersyarat mengarahkan kami ke simpul `tools` setelahnya.
+1. Pertama simpul `model` dieksekusi dan memutuskan untuk memanggil alat `duckduckgo_search`, yang menyebabkan tepi bersyarat mengarahkan kita ke simpul `tools` setelahnya.
 2. `ToolNode` mengeksekusi alat pencarian dan mendapatkan hasil pencarian yang dicetak di atas, yang sebenarnya mengandung jawaban "Usia dan Tahun Kematian . 5 Januari 1933 (usia 60)".
 3. Alat `model` dipanggil lagi, kali ini dengan hasil pencarian sebagai pesan terbaru, dan menghasilkan jawaban akhir (tanpa panggilan alat lagi); oleh karena itu, tepi bersyarat mengakhiri grafik.
 
@@ -470,8 +470,8 @@ Representasi visual ditunjukkan pada [Gambar 6-2](#ch06_figure_2_173654567174466
 
 Perhatikan perbedaan dibandingkan bagian sebelumnya:
 
-- Sekarang, kami memulai semua pemanggilan dengan memanggil `first_model`, yang sama sekali tidak memanggil LLM. Itu hanya membuat panggilan alat untuk alat pencarian, menggunakan pesan pengguna secara verbatim sebagai kueri pencarian. Arsitektur sebelumnya akan memiliki LLM menghasilkan panggilan alat ini (atau respons lain yang dianggap lebih baik).
-- Setelah itu, kami melanjutkan ke `tools`, yang identik dengan contoh sebelumnya, dan dari sana kami melanjutkan ke simpul `agent` seperti sebelumnya.
+- Sekarang, kita memulai semua pemanggilan dengan memanggil `first_model`, yang sama sekali tidak memanggil LLM. Itu hanya membuat panggilan alat untuk alat pencarian, menggunakan pesan pengguna secara verbatim sebagai kueri pencarian. Arsitektur sebelumnya akan memiliki LLM menghasilkan panggilan alat ini (atau respons lain yang dianggap lebih baik).
+- Setelah itu, kita melanjutkan ke `tools`, yang identik dengan contoh sebelumnya, dan dari sana kita melanjutkan ke simpul `agent` seperti sebelumnya.
 
 Sekarang mari kita lihat beberapa contoh keluaran, untuk kueri yang sama seperti sebelumnya:
 
@@ -552,7 +552,7 @@ _Keluaran:_
 }
 ```
 
-Kali ini, kami melewatkan panggilan LLM awal. Kami pertama pergi ke simpul `first_model`, yang langsung mengembalikan panggilan alat untuk alat pencarian. Dari sana kami pergi ke alur sebelumnya—yaitu, kami mengeksekusi alat pencarian dan akhirnya kembali ke simpul `model` untuk menghasilkan jawaban akhir.
+Kali ini, kita melewatkan panggilan LLM awal. kita pertama pergi ke simpul `first_model`, yang langsung mengembalikan panggilan alat untuk alat pencarian. Dari sana kita pergi ke alur sebelumnya—yaitu, kita mengeksekusi alat pencarian dan akhirnya kembali ke simpul `model` untuk menghasilkan jawaban akhir.
 
 Selanjutnya mari kita bahas apa yang dapat Anda lakukan ketika Anda memiliki banyak alat yang ingin Anda buat tersedia untuk LLM.
 
@@ -698,7 +698,7 @@ Anda dapat melihat representasi visual pada [Gambar 6-3](#ch06_figure_3_17365456
 ![A diagram of a software development process  Description automatically generated](Images/lelc_0603.png)
 
 > Catatan
-> Ini sangat mirip dengan arsitektur agen biasa. Satu‑satunya perbedaan adalah kami berhenti di simpul `select_tools` sebelum memasuki lingkaran agen sebenarnya. Setelah itu, ia bekerja persis seperti arsitektur agen biasa yang telah kami lihat sebelumnya.
+> Ini sangat mirip dengan arsitektur agen biasa. Satu‑satunya perbedaan adalah kita berhenti di simpul `select_tools` sebelum memasuki lingkaran agen sebenarnya. Setelah itu, ia bekerja persis seperti arsitektur agen biasa yang telah kita lihat sebelumnya.
 
 Sekarang mari kita lihat beberapa contoh keluaran untuk kueri yang sama seperti sebelumnya:
 
@@ -783,12 +783,12 @@ _Keluaran:_
 }
 ```
 
-Perhatikan bagaimana hal pertama yang kami lakukan adalah mengkueri pengambil untuk mendapatkan alat paling relevan untuk kueri pengguna saat ini. Kemudian, kami melanjutkan ke arsitektur agen biasa.
+Perhatikan bagaimana hal pertama yang kita lakukan adalah mengkueri pengambil untuk mendapatkan alat paling relevan untuk kueri pengguna saat ini. Kemudian, kita melanjutkan ke arsitektur agen biasa.
 
 ## Ringkasan
 
 Bab ini memperkenalkan konsep _agensi_ dan membahas apa yang diperlukan untuk membuat aplikasi LLM _agen_: memberi LLM kemampuan untuk memutuskan antara beberapa opsi dengan menggunakan informasi eksternal.
 
-Kami menelusuri arsitektur agen standar yang dibangun dengan LangGraph dan melihat dua ekstensi berguna: cara selalu memanggil alat tertentu pertama dan cara menangani banyak alat.
+kita menelusuri arsitektur agen standar yang dibangun dengan LangGraph dan melihat dua ekstensi berguna: cara selalu memanggil alat tertentu pertama dan cara menangani banyak alat.
 
 [Bab 7](ch07.xhtml#ch07_agents_ii_1736545673023633) melihat ekstensi tambahan untuk arsitektur agen.
